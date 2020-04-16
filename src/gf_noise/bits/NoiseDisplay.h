@@ -18,15 +18,23 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#ifndef NOISE_DISPLAY_H
+#define NOISE_DISPLAY_H
 
-#include "bits/NoiseApp.h"
+#include <gf/Entity.h>
 
-#include "config.h"
+namespace gftools {
+  struct NoiseState;
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
+  class NoiseDisplay : public gf::Entity {
+  public:
+    NoiseDisplay(const NoiseState& state);
+    void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+
+  private:
+    const NoiseState& m_state;
+  };
+
 }
+
+#endif // NOISE_DISPLAY_H

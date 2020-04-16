@@ -18,15 +18,29 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#include "NoiseScene.h"
 
-#include "bits/NoiseApp.h"
+#include <gf/Color.h>
 
-#include "config.h"
+#include "NoiseApp.h"
+#include "NoiseState.h"
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
+namespace gftools {
+
+  NoiseScene::NoiseScene(NoiseApp& app)
+  : gf::Scene(app.getRenderer().getSize())
+  , m_app(app)
+  , m_display(app.state)
+  , m_gui(app.state)
+  {
+    setClearColor(gf::Color::Gray());
+
+    setWorldViewSize(gf::vec(MapSize, MapSize));
+    setWorldViewCenter(gf::vec(MapSize, MapSize) * 0.5f);
+
+    addWorldEntity(m_display);
+
+    addHudEntity(m_gui);
+  }
+
 }

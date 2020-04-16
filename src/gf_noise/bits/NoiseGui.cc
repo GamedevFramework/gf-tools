@@ -18,15 +18,13 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#include "NoiseGui.h"
 
-#include "bits/NoiseApp.h"
+namespace gftools {
 
-#include "config.h"
+  NoiseGui::NoiseGui(NoiseState& state)
+  : m_state(state)
+  {
+  }
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
 }

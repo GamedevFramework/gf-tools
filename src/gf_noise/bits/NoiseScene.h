@@ -18,15 +18,31 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#ifndef NOISE_SCENE_H
+#define NOISE_SCENE_H
 
-#include "bits/NoiseApp.h"
+#include <gf/Scene.h>
 
-#include "config.h"
+#include "NoiseDisplay.h"
+#include "NoiseGui.h"
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
+namespace gftools {
+
+  struct NoiseApp;
+
+  class NoiseScene : public gf::Scene {
+  public:
+    NoiseScene(NoiseApp& app);
+
+
+  private:
+    NoiseApp& m_app;
+
+    NoiseDisplay m_display;
+    NoiseGui m_gui;
+  };
+
 }
+
+
+#endif // NOISE_SCENE_H

@@ -18,15 +18,22 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#ifndef NOISE_GUI_H
+#define NOISE_GUI_H
 
-#include "bits/NoiseApp.h"
+#include <gf/Entity.h>
 
-#include "config.h"
+namespace gftools {
+  struct NoiseState;
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
+  class NoiseGui : public gf::Entity {
+  public:
+    NoiseGui(NoiseState& state);
+
+  private:
+    NoiseState& m_state;
+  };
+
 }
+
+#endif // NOISE_GUI_H

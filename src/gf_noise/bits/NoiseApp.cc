@@ -18,15 +18,35 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#include "NoiseApp.h"
 
-#include "bits/NoiseApp.h"
+#include <imgui.h>
+#include <imgui_impl_gf.h>
 
-#include "config.h"
+namespace gftools {
 
-int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
-  app.run();
-  return 0;
+  NoiseApp::NoiseApp(std::initializer_list<gf::Path> paths)
+  : gf::SceneManager("gf_noise", gf::vec(1280, 720))
+  , resources(paths)
+  , noise(*this)
+  {
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+
+    // config
+    io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
+    io.IniFilename = nullptr;
+
+    // load font(s)
+    io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DroidSans.ttf").string().c_str(), 18);
+    ImGui_ImplGF_Init(getWindow(), getRenderer());
+
+    pushScene(noise);
+  }
+
+  NoiseApp::~NoiseApp() {
+    ImGui_ImplGF_Shutdown();
+    ImGui::DestroyContext();
+  }
+
 }

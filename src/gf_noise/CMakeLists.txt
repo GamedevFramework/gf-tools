@@ -2,6 +2,12 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 
 add_executable(gf_noise
   gf_noise.cc
+
+  bits/NoiseApp.cc
+  bits/NoiseDisplay.cc
+  bits/NoiseGui.cc
+  bits/NoiseScene.cc
+
   ../../vendor/gf-imgui/imgui_impl_gf.cc
   ../../vendor/gf-imgui/imgui/imgui.cpp
   ../../vendor/gf-imgui/imgui/imgui_demo.cpp
