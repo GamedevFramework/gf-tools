@@ -38,7 +38,7 @@ namespace gftools {
     io.IniFilename = nullptr;
 
     // load font(s)
-    io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DroidSans.ttf").string().c_str(), 18);
+    io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DroidSans.ttf").string().c_str(), 16);
     ImGui_ImplGF_Init(getWindow(), getRenderer());
 
     pushScene(noise);

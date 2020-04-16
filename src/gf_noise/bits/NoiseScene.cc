@@ -22,6 +22,9 @@
 
 #include <gf/Color.h>
 
+#include <imgui.h>
+#include <imgui_impl_gf.h>
+
 #include "NoiseApp.h"
 #include "NoiseState.h"
 
@@ -41,6 +44,24 @@ namespace gftools {
     addWorldEntity(m_display);
 
     addHudEntity(m_gui);
+  }
+
+  bool NoiseScene::doEarlyProcessEvent(gf::Event& event) {
+    return ImGui_ImplGF_ProcessEvent(event);
+  }
+
+  void NoiseScene::doUpdate(gf::Time time) {
+    ImGui_ImplGF_Update(time);
+  }
+
+  void NoiseScene::doRender(gf::RenderTarget& target, const gf::RenderStates &states) {
+    ImGui::NewFrame();
+
+    renderWorldEntities(target, states);
+    renderHudEntities(target, states);
+
+    ImGui::Render();
+    ImGui_ImplGF_RenderDrawData(ImGui::GetDrawData());
   }
 
 }

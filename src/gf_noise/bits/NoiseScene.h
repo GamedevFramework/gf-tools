@@ -34,6 +34,10 @@ namespace gftools {
   public:
     NoiseScene(NoiseApp& app);
 
+  private:
+    bool doEarlyProcessEvent(gf::Event& event) override;
+    void doUpdate(gf::Time time) override;
+    void doRender(gf::RenderTarget& target, const gf::RenderStates &states) override;
 
   private:
     NoiseApp& m_app;

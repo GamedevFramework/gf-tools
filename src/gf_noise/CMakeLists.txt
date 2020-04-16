@@ -7,6 +7,7 @@ add_executable(gf_noise
   bits/NoiseDisplay.cc
   bits/NoiseGui.cc
   bits/NoiseScene.cc
+  bits/NoiseState.cc
 
   ../../vendor/gf-imgui/imgui_impl_gf.cc
   ../../vendor/gf-imgui/imgui/imgui.cpp

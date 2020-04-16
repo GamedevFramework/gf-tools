@@ -22,6 +22,8 @@
 #define NOISE_STATE_H
 
 #include <gf/Heightmap.h>
+#include <gf/Noise.h>
+#include <gf/Random.h>
 #include <gf/Texture.h>
 
 namespace gftools {
@@ -97,6 +99,9 @@ namespace gftools {
     gf::Heightmap heightmap;
     gf::Image image;
     gf::Texture texture;
+    gf::Random random;
+
+    void generateImage(gf::Noise2D& noise);
   };
 
 }

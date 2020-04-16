@@ -21,6 +21,8 @@
 #ifndef NOISE_GUI_H
 #define NOISE_GUI_H
 
+#include <string>
+
 #include <gf/Entity.h>
 
 namespace gftools {
@@ -30,8 +32,18 @@ namespace gftools {
   public:
     NoiseGui(NoiseState& state);
 
+    void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+
   private:
     NoiseState& m_state;
+    int m_noiseChoice;
+    int m_stepChoice;
+    int m_pointCount;
+    int m_distanceChoice;
+    int m_combinationChoice;
+    int m_fractalChoice;
+    int m_renderingChoice;
+    std::string m_feedback;
   };
 
 }
