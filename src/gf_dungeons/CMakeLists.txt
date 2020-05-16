@@ -2,6 +2,16 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.h.in" "${CMAKE_CURRENT_BINARY
 
 add_executable(gf_dungeons
   gf_dungeons.cc
+  bits/DungeonApp.cc
+  bits/DungeonDisplay.cc
+  bits/DungeonGenerator.cc
+  bits/DungeonGenerator_BinarySpacePartitioning.cc
+  bits/DungeonGenerator_CellularAutomaton.cc
+  bits/DungeonGenerator_DrunkardMarch.cc
+  bits/DungeonGenerator_Tunneling.cc
+  bits/DungeonGui.cc
+  bits/DungeonScene.cc
+  bits/DungeonState.cc
   ../../vendor/gf-imgui/imgui_impl_gf.cc
   ../../vendor/gf-imgui/imgui/imgui.cpp
   ../../vendor/gf-imgui/imgui/imgui_demo.cpp

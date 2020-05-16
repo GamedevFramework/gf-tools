@@ -18,15 +18,39 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#ifndef DUNGEON_SCENE_H
+#define DUNGEON_SCENE_H
 
-#include "bits/DungeonApp.h"
+#include <gf/Scene.h>
+#include <gf/Views.h>
 
-#include "config.h"
+#include "DungeonDisplay.h"
+#include "DungeonGui.h"
 
-int main() {
-  gftools::DungeonApp app(GF_TOOLS_DATADIR);
-  app.run();
-  return 0;
+namespace gftools {
+
+  struct DungeonApp;
+
+  class DungeonScene : public gf::Scene {
+  public:
+    DungeonScene(DungeonApp& app);
+
+  private:
+    bool doEarlyProcessEvent(gf::Event& event) override;
+    void doProcessEvent(gf::Event& event) override;
+    void doUpdate(gf::Time time) override;
+    void doRender(gf::RenderTarget& target, const gf::RenderStates &states) override;
+
+  private:
+    DungeonApp& m_app;
+
+    gf::ZoomingViewAdaptor m_adaptor;
+
+    DungeonDisplay m_display;
+    DungeonGui m_gui;
+  };
+
 }
+
+
+#endif // DUNGEON_SCENE_H

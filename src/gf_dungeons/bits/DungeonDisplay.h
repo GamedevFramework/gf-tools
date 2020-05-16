@@ -18,15 +18,23 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#ifndef DUNGEON_DISPLAY_H
+#define DUNGEON_DISPLAY_H
 
-#include "bits/DungeonApp.h"
+#include <gf/Entity.h>
 
-#include "config.h"
+namespace gftools {
+  struct DungeonState;
 
-int main() {
-  gftools::DungeonApp app(GF_TOOLS_DATADIR);
-  app.run();
-  return 0;
+  class DungeonDisplay : public gf::Entity {
+  public:
+    DungeonDisplay(DungeonState& state);
+    void render(gf::RenderTarget& target, const gf::RenderStates& states) override;
+
+  private:
+    DungeonState& m_state;
+  };
+
 }
+
+#endif // DUNGEON_DISPLAY_H

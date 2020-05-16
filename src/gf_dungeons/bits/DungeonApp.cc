@@ -18,15 +18,35 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#include "DungeonApp.h"
 
-#include "bits/DungeonApp.h"
+#include <imgui.h>
+#include <imgui_impl_gf.h>
 
-#include "config.h"
+namespace gftools {
 
-int main() {
-  gftools::DungeonApp app(GF_TOOLS_DATADIR);
-  app.run();
-  return 0;
+  DungeonApp::DungeonApp(gf::Path path)
+  : gf::SceneManager("gf_dungeons", gf::vec(1280, 720))
+  , resources({ path })
+  , scene(*this)
+  {
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+
+    // config
+    io.ConfigFlags = ImGuiConfigFlags_NavEnableKeyboard;
+    io.IniFilename = nullptr;
+
+    // load font(s)
+    io.Fonts->AddFontFromFileTTF(resources.getAbsolutePath("DroidSans.ttf").string().c_str(), 16);
+    ImGui_ImplGF_Init(getWindow(), getRenderer());
+
+    pushScene(scene);
+  }
+
+  DungeonApp::~DungeonApp() {
+    ImGui_ImplGF_Shutdown();
+    ImGui::DestroyContext();
+  }
+
 }

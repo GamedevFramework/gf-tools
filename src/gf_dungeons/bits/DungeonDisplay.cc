@@ -18,15 +18,22 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
-#include <gf/ResourceManager.h>
-#include <gf/SceneManager.h>
+#include "DungeonDisplay.h"
 
-#include "bits/DungeonApp.h"
+#include <gf/Sprite.h>
+#include <gf/RenderTarget.h>
 
-#include "config.h"
+#include "DungeonState.h"
 
-int main() {
-  gftools::DungeonApp app(GF_TOOLS_DATADIR);
-  app.run();
-  return 0;
+namespace gftools {
+
+  DungeonDisplay::DungeonDisplay(DungeonState& state)
+  : m_state(state)
+  {
+  }
+
+  void DungeonDisplay::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+    target.draw(m_state.vertices, states);
+  }
+
 }

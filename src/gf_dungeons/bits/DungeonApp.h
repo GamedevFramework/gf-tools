@@ -18,15 +18,27 @@
  *    misrepresented as being the original software.
  * 3. This notice may not be removed or altered from any source distribution.
  */
+#ifndef DUNGEON_APP_H
+#define DUNGEON_APP_H
+
 #include <gf/ResourceManager.h>
 #include <gf/SceneManager.h>
 
-#include "bits/DungeonApp.h"
+#include "DungeonState.h"
+#include "DungeonScene.h"
 
-#include "config.h"
+namespace gftools {
 
-int main() {
-  gftools::DungeonApp app(GF_TOOLS_DATADIR);
-  app.run();
-  return 0;
+  struct DungeonApp : public gf::SceneManager {
+    DungeonApp(gf::Path path);
+    ~DungeonApp();
+
+    gf::ResourceManager resources;
+
+    DungeonState state;
+    DungeonScene scene;
+  };
+
 }
+
+#endif // NOISE_APP_H
