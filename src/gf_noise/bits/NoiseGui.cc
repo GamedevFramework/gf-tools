@@ -136,6 +136,7 @@ namespace gftools {
 
   void NoiseGui::render(gf::RenderTarget& target, const gf::RenderStates& states) {
 
+    ImGui::SetNextWindowBgAlpha(0.7f);
     if (ImGui::Begin("Noise parameters", nullptr, DefaultWindowFlags)) {
 
       ImGui::Combo("##Noise", &m_noiseChoice, NoiseList, IM_ARRAYSIZE(NoiseList));

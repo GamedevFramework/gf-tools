@@ -25,9 +25,9 @@
 
 namespace gftools {
 
-  NoiseApp::NoiseApp(std::initializer_list<gf::Path> paths)
+  NoiseApp::NoiseApp(gf::Path path)
   : gf::SceneManager("gf_noise", gf::vec(1280, 720))
-  , resources(paths)
+  , resources({ path })
   , noise(*this)
   {
     ImGui::CreateContext();

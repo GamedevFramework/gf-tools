@@ -30,7 +30,7 @@
 namespace gftools {
 
   struct NoiseApp : public gf::SceneManager {
-    NoiseApp(std::initializer_list<gf::Path> paths);
+    NoiseApp(gf::Path path);
     ~NoiseApp();
 
     gf::ResourceManager resources;

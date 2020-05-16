@@ -26,7 +26,7 @@
 #include "config.h"
 
 int main() {
-  gftools::NoiseApp app({ GF_TOOLS_DATADIR });
+  gftools::NoiseApp app(GF_TOOLS_DATADIR);
   app.run();
   return 0;
 }
