@@ -1,3 +1,6 @@
 [submodule "vendor/gf-imgui"]
 	path = vendor/gf-imgui
 	url = https://github.com/GamedevFramework/gf-imgui.git
+[submodule "vendor/json"]
+	path = vendor/json
+	url = https://github.com/nlohmann/json.git

@@ -35,7 +35,7 @@ target_include_directories(gf_noise
 
 target_link_libraries(gf_noise
   PRIVATE
-    gf::gf0
+    gf::graphics
 )
 
 install(

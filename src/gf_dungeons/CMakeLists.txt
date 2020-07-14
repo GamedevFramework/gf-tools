@@ -38,7 +38,7 @@ target_include_directories(gf_dungeons
 
 target_link_libraries(gf_dungeons
   PRIVATE
-    gf::gf0
+    gf::graphics
 )
 
 install(
