@@ -16,6 +16,7 @@ add_executable(gf_dungeons
   ../../vendor/gf-imgui/imgui/imgui.cpp
   ../../vendor/gf-imgui/imgui/imgui_demo.cpp
   ../../vendor/gf-imgui/imgui/imgui_draw.cpp
+  ../../vendor/gf-imgui/imgui/imgui_tables.cpp
   ../../vendor/gf-imgui/imgui/imgui_widgets.cpp
 )
 
