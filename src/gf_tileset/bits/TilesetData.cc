@@ -215,6 +215,20 @@ namespace gftools {
     }
   }
 
+  void TilesetData::deleteAtom(gf::Id id) {
+    atoms.erase(std::remove_if(atoms.begin(), atoms.end(), [id](auto& atom) {
+      return atom.id.hash == id;
+    }), atoms.end());
+
+    wang2.erase(std::remove_if(wang2.begin(), wang2.end(), [id](auto& wang) {
+      return wang.borders[0].id.hash == id || wang.borders[1].id.hash == id;
+    }), wang2.end());
+
+    wang3.erase(std::remove_if(wang3.begin(), wang3.end(), [id](auto& wang) {
+      return wang.ids[0].hash == id || wang.ids[1].hash == id || wang.ids[2].hash == id;
+    }), wang3.end());
+  }
+
   /*
    * parsing and saving in JSON
    */
@@ -492,6 +506,7 @@ namespace gftools {
       JSON j = data;
       std::ofstream ofs(filename.string());
       ofs << j.dump(1, '\t') << '\n';
+      gf::Log::info("Project successfully saved in '%s'\n", filename.string().c_str());
     } catch (std::exception& ex) {
       gf::Log::error("An error occurred while saving file '%s': %s\n", filename.string().c_str(), ex.what());
     }

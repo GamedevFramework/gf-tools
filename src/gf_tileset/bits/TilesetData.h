@@ -194,6 +194,7 @@ namespace gftools {
     Edge getEdge(gf::Id id0, gf::Id id1, Search search = Search::UseDatabaseOnly) const;
 
     void updateAtom(Atom oldAtom, Atom newAtom);
+    void deleteAtom(gf::Id id);
 
     static TilesetData load(const gf::Path& filename);
     static void save(const gf::Path& filename, const TilesetData& data);

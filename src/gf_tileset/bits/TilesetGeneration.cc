@@ -339,20 +339,20 @@ namespace gftools {
 
       switch (c) {
         case Corner::TopLeft:
-          tile.fences.segments[0].p0 = fenceTop(settings, half - 1 + edge.offset);
-          tile.fences.segments[0].p1 = fenceLeft(settings, half - 1 + edge.offset);
+          tile.fences.segments[0].p0 = fenceTop(settings, half + edge.offset);
+          tile.fences.segments[0].p1 = fenceLeft(settings, half + edge.offset);
           break;
         case Corner::TopRight:
-          tile.fences.segments[0].p0 = fenceTop(settings, half - edge.offset);
-          tile.fences.segments[0].p1 = fenceRight(settings, half - 1 + edge.offset);
+          tile.fences.segments[0].p0 = fenceTop(settings, half - edge.offset - 1);
+          tile.fences.segments[0].p1 = fenceRight(settings, half + edge.offset);
           break;
         case Corner::BottomLeft:
-          tile.fences.segments[0].p0 = fenceBottom(settings, half - 1 + edge.offset);
-          tile.fences.segments[0].p1 = fenceLeft(settings, half - edge.offset);
+          tile.fences.segments[0].p0 = fenceBottom(settings, half + edge.offset);
+          tile.fences.segments[0].p1 = fenceLeft(settings, half - edge.offset - 1);
           break;
         case Corner::BottomRight:
-          tile.fences.segments[0].p0 = fenceBottom(settings, half - edge.offset);
-          tile.fences.segments[0].p1 = fenceRight(settings, half - edge.offset);
+          tile.fences.segments[0].p0 = fenceBottom(settings, half - edge.offset - 1);
+          tile.fences.segments[0].p1 = fenceRight(settings, half - edge.offset - 1);
           break;
       }
     }
@@ -395,8 +395,8 @@ namespace gftools {
     if (edge.limit) {
       tile.fences.count = 2;
       tile.fences.segments[0].p0 = fenceTop(settings, half + edge.offset);
-      tile.fences.segments[0].p1 = fenceRight(settings, half - 1 - edge.offset);
-      tile.fences.segments[1].p0 = fenceBottom(settings, half - 1 - edge.offset);
+      tile.fences.segments[0].p1 = fenceRight(settings, half - edge.offset - 1);
+      tile.fences.segments[1].p0 = fenceBottom(settings, half - edge.offset - 1);
       tile.fences.segments[1].p1 = fenceLeft(settings, half + edge.offset);
     }
 
@@ -478,42 +478,44 @@ namespace gftools {
       tile.terrain[TerrainTopRight] = b2;
     }
 
-    assert(checkEdges(e01, e12, e20));
+    if (checkEdges(e01, e12, e20)) {
 
-    if (e01.limit && e12.limit) {
-      if (split == HSplit::Top) {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - 1 + e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e12.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half + e12.offset);
+      if (e01.limit && e12.limit) {
+        if (split == HSplit::Top) {
+          tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half + e01.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e12.offset);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half + e12.offset);
+        }
+
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
-    }
+      if (e12.limit && e20.limit) {
+        if (split == HSplit::Top) {
+          tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half - e20.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e12.offset);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half + e20.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half + e12.offset);
+        }
 
-    if (e12.limit && e20.limit) {
-      if (split == HSplit::Top) {
-        tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half - 1 - e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e12.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half + e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half + e12.offset);
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
-    }
+      if (e20.limit && e01.limit) {
+        if (split == HSplit::Top) {
+          tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half + e01.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half - e20.offset - 1);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e20.offset);
+        }
 
-    if (e20.limit && e01.limit) {
-      if (split == HSplit::Top) {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - 1 + e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half - 1 - e20.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e20.offset);
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
     }
 
     tile.checkHoles();
@@ -582,42 +584,44 @@ namespace gftools {
       tile.terrain[TerrainBottomLeft] = b2;
     }
 
-    assert(checkEdges(e01, e12, e20));
+    if (checkEdges(e01, e12, e20)) {
 
-    if (e01.limit && e12.limit) {
-      if (split == VSplit::Left) {
-        tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - 1 + e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e12.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceLeft(settings, half + e12.offset);
+      if (e01.limit && e12.limit) {
+        if (split == VSplit::Left) {
+          tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half + e01.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e12.offset);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - e01.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceLeft(settings, half + e12.offset);
+        }
+
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
-    }
+      if (e12.limit && e20.limit) {
+        if (split == VSplit::Left) {
+          tile.fences.segments[tile.fences.count].p0 = fenceBottom(settings, half - e20.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e12.offset);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceBottom(settings, half + e20.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceLeft(settings, half + e12.offset);
+        }
 
-    if (e12.limit && e20.limit) {
-      if (split == VSplit::Left) {
-        tile.fences.segments[tile.fences.count].p0 = fenceBottom(settings, half - 1 - e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceRight(settings, half + e12.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceBottom(settings, half + e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceLeft(settings, half + e12.offset);
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
-    }
+      if (e20.limit && e01.limit) {
+        if (split == VSplit::Left) {
+          tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half + e01.offset);
+          tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - e20.offset - 1);
+        } else {
+          tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - e01.offset - 1);
+          tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e20.offset);
+        }
 
-    if (e20.limit && e01.limit) {
-      if (split == VSplit::Left) {
-        tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - 1 + e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - 1 - e20.offset);
-      } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceTop(settings, half - e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half + e20.offset);
+        ++tile.fences.count;
       }
 
-      ++tile.fences.count;
     }
 
     tile.checkHoles();
@@ -681,11 +685,11 @@ namespace gftools {
 
     if (e01.limit) {
       if (oblique == Oblique::Up) {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half - e01.offset);
+        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - e01.offset - 1);
+        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half - e01.offset - 1);
       } else {
-        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half - 1 + e01.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - 1 - e01.offset);
+        tile.fences.segments[tile.fences.count].p0 = fenceLeft(settings, half + e01.offset);
+        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - e01.offset - 1);
       }
 
       ++tile.fences.count;
@@ -693,11 +697,11 @@ namespace gftools {
 
     if (e20.limit) {
       if (oblique == Oblique::Up) {
-        tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half - 1 - e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - 1 - e20.offset);
+        tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half - e20.offset - 1);
+        tile.fences.segments[tile.fences.count].p1 = fenceBottom(settings, half - e20.offset - 1);
       } else {
         tile.fences.segments[tile.fences.count].p0 = fenceRight(settings, half + e20.offset);
-        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half - e20.offset);
+        tile.fences.segments[tile.fences.count].p1 = fenceTop(settings, half - e20.offset - 1);
       }
 
       ++tile.fences.count;

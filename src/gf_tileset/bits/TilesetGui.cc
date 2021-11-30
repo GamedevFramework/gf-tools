@@ -152,6 +152,7 @@ namespace gftools {
               ImGui::TableHeadersRow();
 
               std::size_t index = 0;
+              gf::Id atomToDelete = gf::InvalidId;
 
               for (auto& atom : m_data.atoms) {
                 ImGui::TableNextColumn();
@@ -332,8 +333,11 @@ namespace gftools {
                 ++index;
               }
 
-
               ImGui::EndTable();
+
+              if (atomToDelete != gf::InvalidId) {
+                m_data.deleteAtom(atomToDelete);
+              }
             }
 
           }
@@ -729,7 +733,7 @@ namespace gftools {
                         if (id.hash == Void) {
                           id = m_data.atoms.front().id;
                         } else {
-                          id.name = "-";
+                          id.name = "Void";
                           id.hash = Void;
                         }
                       }

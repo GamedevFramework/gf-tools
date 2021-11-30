@@ -111,7 +111,7 @@ namespace gftools {
           int anomalies = atom.pigment.randomize.ratio * size.width * size.height / gf::square(atom.pigment.randomize.size) + 1;
 
           for (int i = 0; i < anomalies; ++i) {
-            gf::Vector2i pos = random.computePosition(gf::RectI::fromPositionSize(gf::vec(0, 0), size - atom.pigment.randomize.size));
+            gf::Vector2i pos = random.computePosition(gf::RectI::fromSize(size - atom.pigment.randomize.size));
 
             gf::Id id = tile.pixels(pos);
 
@@ -303,8 +303,14 @@ namespace gftools {
 
             case BorderEffect::Blend:
               if (minDistance <= border.blend.distance) {
+                float stop = 1.0f;
+
+                if (wang.borders[1 - i].effect == BorderEffect::Blend) {
+                  stop = 0.5f;
+                }
+
                 changed = true;
-                color = gf::lerp(color, originalColors(minNeighbor), (border.blend.distance - minDistance) / static_cast<float>(border.blend.distance) + random.computeUniformFloat(-0.05f, 0.05f));
+                color = gf::lerp(color, originalColors(minNeighbor), stop * (border.blend.distance - minDistance) / static_cast<float>(border.blend.distance) + random.computeUniformFloat(0.0f, 0.05f));
               }
               break;
 
@@ -576,7 +582,7 @@ namespace gftools {
           if (tile.fences.count > 0) {
             os << ">\n";
             os << "\t<properties>\n";
-            os << "\t\t<property name=\"fence_count\" value=\"" << tile.fences.count << "\" />\n";
+            os << "\t\t<property " << kv("name", "fence_count") << ' ' << kv("value", tile.fences.count) << ' ' << kv("type", "int") << "/>\n";
 
             char name[] = "fence#";
 
@@ -584,7 +590,11 @@ namespace gftools {
               static constexpr char Sep = ',';
 
               name[5] = '0' + i;
-              os << "\t\t<property name=\"" << name << "\" value=\"" << tile.fences.segments[i].p0.x << Sep << tile.fences.segments[i].p0.y << Sep << tile.fences.segments[i].p1.x << Sep << tile.fences.segments[i].p1.y << "\" />\n";
+              os << "\t\t<property name=\"" << name << "\" value=\""
+                << tile.fences.segments[i].p0.x << Sep
+                << tile.fences.segments[i].p0.y << Sep
+                << tile.fences.segments[i].p1.x << Sep
+                << tile.fences.segments[i].p1.y << "\" />\n";
             }
 
             os << "\t</properties>\n";
