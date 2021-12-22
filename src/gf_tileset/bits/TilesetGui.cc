@@ -116,21 +116,23 @@ namespace gftools {
             m_modified = true;
           }
 
-          ImGui::Separator();
+          if (!m_data.settings.locked) {
+            ImGui::Separator();
 
-          if (ImGui::InputInt("Max Atom Count", &m_data.settings.maxAtomCount, InputSlowStep, InputFastStep)) {
-            m_size = m_data.settings.getImageSize();
-            m_modified = true;
-          }
+            if (ImGui::InputInt("Max Atom Count", &m_data.settings.maxAtomCount, InputSlowStep, InputFastStep)) {
+              m_size = m_data.settings.getImageSize();
+              m_modified = true;
+            }
 
-          if (ImGui::InputInt("Max Wang2 Count", &m_data.settings.maxWang2Count, InputSlowStep, InputFastStep)) {
-            m_size = m_data.settings.getImageSize();
-            m_modified = true;
-          }
+            if (ImGui::InputInt("Max Wang2 Count", &m_data.settings.maxWang2Count, InputSlowStep, InputFastStep)) {
+              m_size = m_data.settings.getImageSize();
+              m_modified = true;
+            }
 
-          if (ImGui::InputInt("Max Wang3 Count", &m_data.settings.maxWang3Count, InputSlowStep, InputFastStep)) {
-            m_size = m_data.settings.getImageSize();
-            m_modified = true;
+            if (ImGui::InputInt("Max Wang3 Count", &m_data.settings.maxWang3Count, InputSlowStep, InputFastStep)) {
+              m_size = m_data.settings.getImageSize();
+              m_modified = true;
+            }
           }
 
           ImGui::Text("Image size: %ix%i", m_size.width, m_size.height);
@@ -164,7 +166,7 @@ namespace gftools {
 
                 ImGui::TableNextColumn();
 
-                if (index + 1 < m_data.atoms.size()) {
+                if (!m_data.settings.locked && index + 1 < m_data.atoms.size()) {
                   if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
                     std::swap(m_data.atoms[index], m_data.atoms[index + 1]);
                     m_modified = true;
@@ -175,7 +177,7 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (index > 0) {
+                if (!m_data.settings.locked && index > 0) {
                   if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
                     std::swap(m_data.atoms[index], m_data.atoms[index - 1]);
                     m_modified = true;
@@ -307,8 +309,12 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (ImGui::Button("Delete")) {
-                  ImGui::OpenPopup("Delete");
+                if (m_data.settings.locked) {
+                  ImGui::TextDisabled("Delete");
+                } else {
+                  if (ImGui::Button("Delete")) {
+                    ImGui::OpenPopup("Delete");
+                  }
                 }
 
                 if (ImGui::BeginPopupModal("Delete", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -393,7 +399,7 @@ namespace gftools {
                   }
                 }
 
-                if (index + 1 < m_data.wang2.size()) {
+                if (!m_data.settings.locked && index + 1 < m_data.wang2.size()) {
                   if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
                     std::swap(m_data.wang2[index], m_data.wang2[index + 1]);
                     m_modified = true;
@@ -404,7 +410,7 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (index > 0) {
+                if (!m_data.settings.locked && index > 0) {
                   if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
                     std::swap(m_data.wang2[index], m_data.wang2[index - 1]);
                     m_modified = true;
@@ -424,7 +430,7 @@ namespace gftools {
                 auto generatePreview = [this]() {
                   m_data.temporary.wang2 = m_editedWang2;
                   m_wang2Preview = gf::Texture(generateWang2Preview(m_editedWang2, m_random, m_data));
-                  m_wang2Preview.setSmooth();
+//                   m_wang2Preview.setSmooth();
                   m_data.temporary.wang2 = Wang2();
                 };
 
@@ -588,8 +594,12 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (ImGui::Button("Delete")) {
-                  ImGui::OpenPopup("Delete");
+                if (m_data.settings.locked) {
+                  ImGui::TextDisabled("Delete");
+                } else {
+                  if (ImGui::Button("Delete")) {
+                    ImGui::OpenPopup("Delete");
+                  }
                 }
 
                 if (ImGui::BeginPopupModal("Delete", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -672,7 +682,7 @@ namespace gftools {
                   }
                 }
 
-                if (index + 1 < m_data.wang3.size()) {
+                if (!m_data.settings.locked && index + 1 < m_data.wang3.size()) {
                   if (ImGui::ArrowButton("Down", ImGuiDir_Down)) {
                     std::swap(m_data.wang3[index], m_data.wang3[index + 1]);
                     m_modified = true;
@@ -683,7 +693,7 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (index > 0) {
+                if (!m_data.settings.locked && index > 0) {
                   if (ImGui::ArrowButton("Up", ImGuiDir_Up)) {
                     std::swap(m_data.wang3[index], m_data.wang3[index - 1]);
                     m_modified = true;
@@ -700,7 +710,7 @@ namespace gftools {
 
                 auto generatePreview = [this]() {
                   m_wang3Preview = gf::Texture(generateWang3Preview(m_editedWang3, m_random, m_data));
-                  m_wang2Preview.setSmooth();
+//                   m_wang3Preview.setSmooth();
                 };
 
                 if (ImGui::Button("Edit")) {
@@ -790,8 +800,12 @@ namespace gftools {
 
                 ImGui::SameLine();
 
-                if (ImGui::Button("Delete")) {
-                  ImGui::OpenPopup("Delete");
+                if (m_data.settings.locked) {
+                  ImGui::TextDisabled("Delete");
+                } else {
+                  if (ImGui::Button("Delete")) {
+                    ImGui::OpenPopup("Delete");
+                  }
                 }
 
                 if (ImGui::BeginPopupModal("Delete", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
@@ -832,6 +846,17 @@ namespace gftools {
             m_data.wang3.emplace_back(std::move(wang));
             m_newWang3 = true;
             m_modified = true;
+          }
+
+          ImGui::SameLine();
+
+          if (m_data.settings.locked) {
+            ImGui::TextDisabled("Generate");
+          } else {
+            if (ImGui::Button("Generate")) {
+              m_data.generateAllWang3();
+              m_modified = true;
+            }
           }
 
           ImGui::EndTabItem();

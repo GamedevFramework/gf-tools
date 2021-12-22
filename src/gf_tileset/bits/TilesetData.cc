@@ -229,6 +229,48 @@ namespace gftools {
     }), wang3.end());
   }
 
+  void TilesetData::generateAllWang3() {
+    wang3.clear();
+    std::size_t count = wang2.size();
+
+    for (std::size_t i = 0; i < count; ++i) {
+      auto & w0 = wang2[i];
+
+      for (std::size_t j = i + 1; j < count; ++j) {
+        auto & w1 = wang2[j];
+
+        for (std::size_t k = j + 1; k < count; ++k) {
+          auto & w2 = wang2[k];
+
+          std::array<AtomId, 6> ids = {
+            w0.borders[0].id, w0.borders[1].id,
+            w1.borders[0].id, w1.borders[1].id,
+            w2.borders[0].id, w2.borders[1].id,
+          };
+
+          std::sort(ids.begin(), ids.end(), [](const AtomId & lhs, const AtomId & rhs) { return lhs.hash < rhs.hash; });
+
+          if (ids[0].hash == ids[1].hash && ids[2].hash == ids[3].hash && ids[4].hash == ids[5].hash) {
+            Wang3 wang;
+            wang.ids[0] = ids[0];
+            wang.ids[1] = ids[2];
+            wang.ids[2] = ids[4];
+
+            if (wang.ids[0].hash == Void) {
+              std::swap(wang.ids[0], wang.ids[2]);
+            }
+
+            if (wang.ids[1].hash == Void) {
+              std::swap(wang.ids[1], wang.ids[2]);
+            }
+
+            wang3.push_back(wang);
+          }
+        }
+      }
+    }
+  }
+
   /*
    * parsing and saving in JSON
    */

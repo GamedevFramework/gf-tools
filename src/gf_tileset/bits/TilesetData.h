@@ -196,6 +196,8 @@ namespace gftools {
     void updateAtom(Atom oldAtom, Atom newAtom);
     void deleteAtom(gf::Id id);
 
+    void generateAllWang3();
+
     static TilesetData load(const gf::Path& filename);
     static void save(const gf::Path& filename, const TilesetData& data);
   };
