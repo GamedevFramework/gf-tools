@@ -86,7 +86,7 @@ namespace gftools {
   {
   }
 
-  void TilesetGui::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+  void TilesetGui::render(gf::RenderTarget& target, [[maybe_unused]] const gf::RenderStates& states) {
     auto size = target.getSize();
 
     ImGui::SetNextWindowPos(ImVec2(0, 0));

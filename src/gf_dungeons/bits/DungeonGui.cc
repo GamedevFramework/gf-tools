@@ -75,7 +75,7 @@ namespace gftools {
   {
   }
 
-  void DungeonGui::render(gf::RenderTarget& target, const gf::RenderStates& states) {
+  void DungeonGui::render([[maybe_unused]] gf::RenderTarget& target, [[maybe_unused]] const gf::RenderStates& states) {
 
     ImGui::SetNextWindowBgAlpha(0.7f);
     if (ImGui::Begin("Dungeon parameters", nullptr, DefaultWindowFlags)) {
