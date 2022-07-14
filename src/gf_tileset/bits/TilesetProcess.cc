@@ -23,6 +23,7 @@
 #include <cinttypes>
 #include <algorithm>
 #include <sstream>
+#include <iomanip>
 
 #include <gf/Color.h>
 #include <gf/Geometry.h>
@@ -517,13 +518,21 @@ namespace gftools {
       return os << kv.key << '=' << '"' << kv.value << '"';
     }
 
+    std::string toString(gf::Color4u color) {
+      std::ostringstream stream;
+      stream << '#' << std::hex << static_cast<int>(color.r) << static_cast<int>(color.g) << static_cast<int>(color.b) << std::dec;
+      return stream.str();
+    }
+
   }
 
   std::string generateTilesetXml(const gf::Path& image, const TilesetData& db, const DecoratedTileset& tilesets) {
+    using namespace std::literals;
+
     std::map<gf::Id, std::size_t> mapping;
 
     for (std::size_t i = 0; i < db.atoms.size(); ++i) {
-      mapping.emplace(db.atoms[i].id.hash, i);
+      mapping.emplace(db.atoms[i].id.hash, i + 1);
     }
 
     auto getTerrainIndex = [&mapping](gf::Id id) {
@@ -533,7 +542,7 @@ namespace gftools {
         return std::to_string(it->second);
       }
 
-      return std::string();
+      return "0"s;
     };
 
     auto features = db.settings.getImageFeatures();
@@ -547,42 +556,29 @@ namespace gftools {
     std::ostringstream os;
 
     os << "<?xml " << kv("version", "1.0") << ' ' << kv("encoding", "UTF-8") << "?>\n";
-    os << "<tileset " << kv("name", image.stem().string()) << ' '
+    os << "<tileset " << kv("version", "1.5") << ' ' << kv("name", image.stem().string()) << ' '
         << kv("tilewidth", db.settings.tile.size) << ' ' << kv("tileheight", db.settings.tile.size) << ' '
         << kv("tilecount", tileCount.width * tileCount.height) << ' ' << kv("columns", tileCount.width) << ' '
         << kv("spacing", db.settings.tile.spacing * 2) << ' ' << kv("margin", db.settings.tile.spacing)
         << ">\n";
 
-    os << "<image " << kv("source", image.string()) << ' '
+    os << " <transformations " << kv("hflip", 1) << ' ' << kv("vflip", 1) << ' ' << kv("rotate", 1) << ' ' << kv("preferuntransformed", 0) << " />\n";
+
+    os << " <image " << kv("source", image.string()) << ' '
         << kv("width", features.size.width) << ' ' << kv("height", features.size.height)
         << "/>\n";
-
-    os << "<terraintypes>\n";
-
-    int index = 0;
-
-    for (auto& atom : db.atoms) {
-      os << "\t<terrain " << kv("name", atom.id.name) << ' ' << kv("tile", positionToIndex(tilesets.findTerrainPosition(atom.id.hash))) << "/>\n";
-      ++index;
-    }
-
-    os << "</terraintypes>\n";
 
     for (auto container : { gf::ref(tilesets.atoms), gf::ref(tilesets.wang2), gf::ref(tilesets.wang3) }) {
       for (auto& tileset : container.get()) {
         for (auto tilePosition : tileset.tiles.getPositionRange()) {
           auto& tile = tileset(tilePosition);
 
-          os << "<tile id=\"" << positionToIndex(tileset.position + tilePosition) << "\" terrain=\""
-            << getTerrainIndex(tile.terrain[0]) << ','
-            << getTerrainIndex(tile.terrain[1]) << ','
-            << getTerrainIndex(tile.terrain[2]) << ','
-            << getTerrainIndex(tile.terrain[3]) << "\"";
+          os << " <tile " << kv("id", positionToIndex(tileset.position + tilePosition));
 
           if (tile.fences.count > 0) {
             os << ">\n";
-            os << "\t<properties>\n";
-            os << "\t\t<property " << kv("name", "fence_count") << ' ' << kv("value", tile.fences.count) << ' ' << kv("type", "int") << "/>\n";
+            os << "  <properties>\n";
+            os << "   <property " << kv("name", "fence_count") << ' ' << kv("value", tile.fences.count) << ' ' << kv("type", "int") << "/>\n";
 
             char name[] = "fence#";
 
@@ -590,15 +586,15 @@ namespace gftools {
               static constexpr char Sep = ',';
 
               name[5] = '0' + i;
-              os << "\t\t<property name=\"" << name << "\" value=\""
+              os << "   <property name=\"" << name << "\" value=\""
                 << tile.fences.segments[i].p0.x << Sep
                 << tile.fences.segments[i].p0.y << Sep
                 << tile.fences.segments[i].p1.x << Sep
                 << tile.fences.segments[i].p1.y << "\" />\n";
             }
 
-            os << "\t</properties>\n";
-            os << "</tile>\n";
+            os << "  </properties>\n";
+            os << " </tile>\n";
           } else {
             os << "/>\n";
           }
@@ -606,6 +602,36 @@ namespace gftools {
         }
       }
     }
+
+
+    os << " <wangsets>\n";
+    os << "  <wangset " << kv("name", "Biomes") << ' ' << kv("type", "corner") << ' ' << kv("tile", -1) << ">\n";
+
+    for (auto& atom : db.atoms) {
+      os << "   <wangcolor " << kv("name", atom.id.name) << ' '
+          << kv("color", toString(gf::Color::toRgba32(atom.color))) << ' '
+          << kv("tile", positionToIndex(tilesets.findTerrainPosition(atom.id.hash))) << ' '
+          << kv("probability", 1)
+          << "/>\n";
+    }
+
+    for (auto container : { gf::ref(tilesets.atoms), gf::ref(tilesets.wang2), gf::ref(tilesets.wang3) }) {
+      for (auto& tileset : container.get()) {
+        for (auto tilePosition : tileset.tiles.getPositionRange()) {
+          auto& tile = tileset(tilePosition);
+
+          os << "   <wangtile tileid=\"" << positionToIndex(tileset.position + tilePosition) << "\" wangid=\""
+            << "0," << getTerrainIndex(tile.terrain[1]) << ',' // top right
+            << "0," << getTerrainIndex(tile.terrain[3]) << ',' // bottom right
+            << "0," << getTerrainIndex(tile.terrain[2]) << ',' // bottom left
+            << "0," << getTerrainIndex(tile.terrain[0])        // top left
+            << "\"/>\n";
+        }
+      }
+    }
+
+    os << "  </wangset>\n";
+    os << " </wangsets>\n";
 
     os << "</tileset>\n";
 
