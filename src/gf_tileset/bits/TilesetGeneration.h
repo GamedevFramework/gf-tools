@@ -27,7 +27,6 @@
 #include <gf/Image.h>
 #include <gf/Polyline.h>
 #include <gf/Random.h>
-#include <gf/Unused.h>
 #include <gf/Vector.h>
 
 #include "TilesetData.h"

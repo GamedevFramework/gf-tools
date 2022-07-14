@@ -108,8 +108,7 @@ namespace gftools {
 
   namespace {
 
-    constexpr gf::Vector2i top(const TileSettings& settings, int i) {
-      gf::unused(settings);
+    constexpr gf::Vector2i top([[maybe_unused]] const TileSettings& settings, int i) {
       return { i, 0 };
     }
 
@@ -125,8 +124,7 @@ namespace gftools {
       return { i, settings.size };
     }
 
-    constexpr gf::Vector2i left(const TileSettings& settings, int i) {
-      gf::unused(settings);
+    constexpr gf::Vector2i left([[maybe_unused]] const TileSettings& settings, int i) {
       return { 0, i };
     }
 
@@ -142,8 +140,7 @@ namespace gftools {
       return { settings.size, i };
     }
 
-    constexpr gf::Vector2i cornerTopLeft(const TileSettings& settings) {
-      gf::unused(settings);
+    constexpr gf::Vector2i cornerTopLeft([[maybe_unused]] const TileSettings& settings) {
       return { 0, 0 };
     }
 
